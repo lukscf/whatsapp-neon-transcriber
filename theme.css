@@ -1,0 +1,195 @@
+/* ===== Caixa de transcrição (vale com ou sem o tema) ===== */
+.wt-box {
+  display: block;
+  width: fit-content;
+  max-width: min(65%, 520px);
+  margin: 2px 63px 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  background: color-mix(in srgb, var(--wt-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--wt-accent) 45%, transparent);
+  color: inherit;
+  white-space: pre-wrap;
+  user-select: text;
+}
+.wt-box.wt-out { margin-left: auto; }
+.wt-btn {
+  all: unset;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wt-neon);
+}
+.wt-btn:hover { text-shadow: 0 0 6px var(--wt-accent); }
+.wt-text:empty { display: none; }
+.wt-text.wt-muted { opacity: .65; font-style: italic; }
+.wt-text.wt-err { color: #ff6b9a; }
+
+/* ===== Tema dark roxo neon (liga com html.wt-neon) ===== */
+html.wt-neon,
+html.wt-neon body,
+html.wt-neon body.dark,
+html.wt-neon .dark {
+  --app-background: var(--wt-bg) !important;
+  --app-background-stripe: var(--wt-accent) !important;
+  --background-default: var(--wt-panel) !important;
+  --background-default-hover: var(--wt-raise) !important;
+  --background-default-active: var(--wt-raise) !important;
+  --panel-background: var(--wt-panel) !important;
+  --panel-background-colored: var(--wt-header) !important;
+  --panel-background-deeper: var(--wt-bg) !important;
+  --panel-background-lighter: var(--wt-raise) !important;
+  --panel-header-background: var(--wt-header) !important;
+  --conversation-panel-background: var(--wt-bg) !important;
+  --conversation-header-border: var(--wt-line) !important;
+  --intro-background: var(--wt-bg) !important;
+  --rich-text-panel-background: var(--wt-header) !important;
+  --compose-input-background: var(--wt-raise) !important;
+  --compose-input-border: var(--wt-line) !important;
+  --search-input-background: var(--wt-raise) !important;
+  --search-container-background: var(--wt-panel) !important;
+  --dropdown-background: var(--wt-header) !important;
+  --dropdown-background-hover: var(--wt-raise) !important;
+  --modal-background: var(--wt-panel) !important;
+  --popup-panel-background: var(--wt-header) !important;
+  --border-list: var(--wt-line) !important;
+  --border-stronger: var(--wt-line) !important;
+  --border-panel: var(--wt-line) !important;
+  --incoming-background: var(--wt-in) !important;
+  --incoming-background-deeper: var(--wt-in) !important;
+  --outgoing-background: var(--wt-out) !important;
+  --outgoing-background-deeper: var(--wt-out) !important;
+  --system-message-background: var(--wt-header) !important;
+  --notification-e2e-background: var(--wt-header) !important;
+  --primary: var(--wt-text) !important;
+  --primary-strong: #ffffff !important;
+  --primary-title: var(--wt-text) !important;
+  --secondary: var(--wt-sub) !important;
+  --secondary-lighter: var(--wt-sub) !important;
+  --secondary-stronger: var(--wt-sub) !important;
+  --message-primary: var(--wt-text) !important;
+  --icon: var(--wt-sub) !important;
+  --icon-high-emphasis: var(--wt-neon) !important;
+  --icon-lighter: var(--wt-sub) !important;
+  --teal: var(--wt-accent) !important;
+  --teal-lighter: var(--wt-neon) !important;
+  --button-primary-background: var(--wt-accent) !important;
+  --button-primary-background-hover: var(--wt-neon) !important;
+  --unread-marker-background: var(--wt-accent) !important;
+  --unread-marker-text: #ffffff !important;
+  --chat-marker-background: var(--wt-accent) !important;
+  --checkmark-read: var(--wt-neon) !important;
+  --icon-ack: var(--wt-neon) !important;
+  --link: var(--wt-neon) !important;
+  --typing: var(--wt-neon) !important;
+  --ptt-blue: var(--wt-neon) !important;
+  --ptt-green: var(--wt-neon) !important;
+  --progress-primary: var(--wt-accent) !important;
+
+  /* tokens do design system novo (WDS) */
+  --WDS-surface-default: var(--wt-panel) !important;
+  --WDS-surface-emphasized: var(--wt-raise) !important;
+  --WDS-surface-highlight: var(--wt-raise) !important;
+  --WDS-background-wash-plain: var(--wt-bg) !important;
+  --WDS-background-wash-inset: var(--wt-bg) !important;
+  --WDS-content-deemphasized: var(--wt-sub) !important;
+  --WDS-content-default: var(--wt-text) !important;
+  --WDS-content-action-emphasized: var(--wt-neon) !important;
+  --WDS-accent: var(--wt-accent) !important;
+  --WDS-accent-emphasized: var(--wt-neon) !important;
+  --WDS-brand-green-500: var(--wt-accent) !important;
+  --WDS-persistent-always-branded: var(--wt-accent) !important;
+  --WDS-bubble-surface-incoming: var(--wt-in) !important;
+  --WDS-bubble-surface-outgoing: var(--wt-out) !important;
+  --WDS-divider: var(--wt-line) !important;
+  --WDS-border-default: var(--wt-line) !important;
+
+  color-scheme: dark;
+}
+
+html.wt-neon body,
+html.wt-neon #app { background: var(--wt-bg) !important; color: var(--wt-text); }
+
+/* faixa de cima e fundo da conversa */
+html.wt-neon #app > div > div::before { background: linear-gradient(90deg, var(--wt-out), var(--wt-accent)) !important; }
+html.wt-neon [data-asset-chat-background-dark],
+html.wt-neon [data-asset-chat-background-light] {
+  opacity: .06 !important;
+  filter: hue-rotate(250deg) saturate(3);
+}
+
+/* balões com brilho neon */
+html.wt-neon .message-out [class*="bubble"],
+html.wt-neon .message-out .copyable-text {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wt-neon) 25%, transparent);
+}
+html.wt-neon .message-out > div > div[class] {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--wt-accent) 35%, transparent));
+}
+
+/* caixa de mensagem e busca */
+html.wt-neon footer [contenteditable="true"],
+html.wt-neon #side [contenteditable="true"] { caret-color: var(--wt-neon); }
+html.wt-neon footer [contenteditable="true"]:focus { text-shadow: none; }
+
+/* seleção e scrollbar */
+html.wt-neon ::selection { background: color-mix(in srgb, var(--wt-accent) 45%, transparent); color: #fff; }
+html.wt-neon ::-webkit-scrollbar { width: 8px; height: 8px; }
+html.wt-neon ::-webkit-scrollbar-thumb { background: var(--wt-line); border-radius: 8px; }
+html.wt-neon ::-webkit-scrollbar-thumb:hover { background: var(--wt-accent); }
+html.wt-neon ::-webkit-scrollbar-track { background: transparent; }
+
+/* caixa de transcrição no tema */
+html.wt-neon .wt-box {
+  background: color-mix(in srgb, var(--wt-bg) 85%, transparent);
+  border-color: color-mix(in srgb, var(--wt-neon) 60%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--wt-accent) 35%, transparent), inset 0 0 8px color-mix(in srgb, var(--wt-accent) 12%, transparent);
+  color: var(--wt-text);
+}
+
+/* ===== Fontes ===== */
+@font-face { font-family: "WT Roboto Mono"; font-weight: 400 700; font-display: swap;
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/RobotoMono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212; }
+@font-face { font-family: "WT Roboto Mono"; font-weight: 400 700; font-display: swap;
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/RobotoMono-latinext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1EFF, U+20A0-20C4; }
+html.wt-font-mono body, html.wt-font-mono body *:not(svg):not(path) {
+  font-family: "WT Roboto Mono", "Roboto Mono", Consolas, "Cascadia Mono", monospace, "Segoe UI Emoji" !important;
+}
+html.wt-font-arial body, html.wt-font-arial body *:not(svg):not(path) {
+  font-family: Arial, Helvetica, sans-serif, "Segoe UI Emoji" !important;
+}
+
+/* ===== Efeito 3D (liga com html.wt-3d) ===== */
+html.wt-3d .wt-tilt {
+  transition: transform .18s ease-out, box-shadow .18s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+html.wt-3d .wt-tilt.wt-tilting {
+  transition: transform .06s linear, box-shadow .18s ease-out;
+  box-shadow: 0 10px 28px -8px color-mix(in srgb, var(--wt-accent) 70%, transparent),
+              0 0 0 1px color-mix(in srgb, var(--wt-neon) 35%, transparent);
+  border-radius: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Tema por conversa do WhatsApp =====
+   O WhatsApp deixa escolher uma cor por conversa (ex.: balão índigo). Ela é
+   definida no #main e vencia o nosso tema; aqui o tema da extensão manda. */
+html.wt-neon #main {
+  --WDS-accent: var(--wt-accent) !important;
+  --WDS-accent-deemphasized: var(--wt-raise) !important;
+  --WDS-accent-emphasized: var(--wt-neon) !important;
+  --WDS-content-action-emphasized: var(--wt-neon) !important;
+  --WDS-content-external-link: var(--wt-neon) !important;
+  --WDS-content-read: var(--wt-neon) !important;
+  --WDS-systems-bubble-surface-incoming: var(--wt-in) !important;
+  --WDS-systems-bubble-surface-outgoing: var(--wt-out) !important;
+  --WDS-systems-chat-background-wallpaper: var(--wt-bg) !important;
+  --WDS-systems-chat-foreground-wallpaper: var(--wt-line) !important;
+}

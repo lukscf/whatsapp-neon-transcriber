@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>WhatsApp Neon Transcriber</title>
+<style>
+  :root { --neon: #d27cff; }
+  body { width: 310px; margin: 0; padding: 16px; font: 13px/1.45 system-ui, sans-serif;
+         background: #0a0612; color: #eee6ff; }
+  h1 { font-size: 15px; margin: 0 0 12px; color: #d27cff; text-shadow: 0 0 8px #b026ff; }
+  h2 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--neon); margin: 18px 0 4px;
+       border-top: 1px solid #2b1a4a; padding-top: 12px; }
+  label { display: block; margin: 10px 0 4px; color: #a898c8; }
+  input[type=text], select {
+    width: 100%; box-sizing: border-box; padding: 7px 9px; border-radius: 8px;
+    background: #170d2b; color: #eee6ff; border: 1px solid #3b1a66; outline: none; }
+  input:focus, select:focus { border-color: #b026ff; box-shadow: 0 0 6px #b026ff; }
+  .row { display: flex; align-items: center; gap: 8px; margin-top: 12px; color: #eee6ff; }
+  .row input { accent-color: #b026ff; }
+  .hint { font-size: 11.5px; color: #a898c8; margin-top: 4px; }
+  .warn { margin-left: 22px; }
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .sw { all: unset; cursor: pointer; text-align: center; font-size: 11px; color: #cfc3ea; padding: 6px 2px; border-radius: 8px;
+        border: 1px solid #2b1a4a; background: #120a20; }
+  .sw i { display: block; width: 22px; height: 22px; margin: 0 auto 4px; border-radius: 50%; }
+  .sw[aria-pressed=true] { border-color: var(--neon); box-shadow: 0 0 8px var(--neon); color: #fff; }
+  #save { margin-top: 14px; width: 100%; padding: 8px; border: 0; border-radius: 8px; cursor: pointer;
+          background: linear-gradient(90deg, #6a12c4, #b026ff); color: #fff; font-weight: 600;
+          box-shadow: 0 0 10px rgba(176, 38, 255, .5); }
+  .privacy { border: 1px solid #3b1a66; background: linear-gradient(160deg, #1a0d30, #0f0820); border-radius: 10px;
+             padding: 10px 12px; font-size: 12px; color: #cfc3ea; box-shadow: 0 0 12px rgba(176, 38, 255, .18); }
+  .privacy b:first-child { color: #fff; font-size: 12.5px; }
+  .privacy ul { margin: 6px 0 8px; padding-left: 16px; }
+  .privacy li { margin: 3px 0; }
+  #wipe { all: unset; cursor: pointer; font-size: 11.5px; font-weight: 600; color: #ff8fb8; }
+  #wipe:hover { text-decoration: underline; }
+  label.inl { display: inline; margin: 0; color: #eee6ff; cursor: pointer; }
+  #ok { text-align: center; margin-top: 8px; color: #d9b3ff; min-height: 16px; }
+</style>
+</head>
+<body>
+  <h1>✦ WhatsApp Neon Transcriber</h1>
+
+  <div class="privacy">
+    <b>🔒 Seus dados ficam com você</b>
+    <ul>
+      <li>Os áudios são transcritos <b>dentro do seu computador</b>. Nenhum áudio, mensagem ou contato é enviado para servidor nenhum.</li>
+      <li>Nada é gravado fora daqui: as transcrições ficam só neste Chrome, por 1 mês, e depois somem sozinhas.</li>
+      <li>Não há conta, rastreamento nem anúncio. A única conexão externa é baixar o modelo Whisper uma vez, do Hugging Face.</li>
+    </ul>
+    <button id="wipe" type="button">Apagar transcrições salvas agora</button>
+  </div>
+
+  <label for="localModel">Modelo Whisper (grátis, roda no seu PC)</label>
+  <select id="localModel">
+    <option value="Xenova/whisper-small">small (melhor em português, ~250 MB)</option>
+    <option value="Xenova/whisper-base">base (mais rápido, ~80 MB)</option>
+    <option value="Xenova/whisper-tiny">tiny (o mais rápido, ~40 MB)</option>
+  </select>
+  <div class="hint">Baixa só uma vez e fica guardado no Chrome. O áudio não sai do seu computador.</div>
+
+  <label for="language">Idioma (vazio = detectar)</label>
+  <input id="language" type="text" placeholder="pt">
+
+  <div class="row"><input id="auto" type="checkbox"><span>Transcrever automaticamente</span></div>
+  <div class="hint warn">Para pegar o áudio a extensão dá um play mudo, então áudio recebido aparece como ouvido para quem mandou.</div>
+
+  <button id="save">Salvar</button>
+  <div id="ok"></div>
+
+  <h2>Aparência</h2>
+  <div class="row"><input id="theme" type="checkbox"><span>Tema dark neon</span></div>
+
+  <label>Cor do tema</label>
+  <div class="swatches">
+    <button class="sw" data-p="roxo"><i style="background:hsl(282 100% 58%)"></i>Roxo</button>
+    <button class="sw" data-p="azul"><i style="background:hsl(205 100% 58%)"></i>Azul</button>
+    <button class="sw" data-p="rosa"><i style="background:hsl(322 100% 58%)"></i>Rosa</button>
+    <button class="sw" data-p="vermelho"><i style="background:hsl(352 100% 58%)"></i>Vermelho</button>
+    <button class="sw" data-p="laranja"><i style="background:hsl(24 100% 58%)"></i>Laranja</button>
+    <button class="sw" data-p="ciano"><i style="background:hsl(180 100% 50%)"></i>Ciano</button>
+    <button class="sw" data-p="matrix"><i style="background:hsl(135 100% 50%)"></i>Matrix</button>
+  </div>
+
+  <label for="font">Fonte</label>
+  <select id="font">
+    <option value="padrao">Padrão do WhatsApp</option>
+    <option value="mono">Mono robot (Roboto Mono)</option>
+    <option value="arial">Arial</option>
+  </select>
+
+  <div class="row"><input id="fx3d" type="checkbox"><span>Efeito 3D que segue o mouse</span></div>
+
+  <h2>Efeitos</h2>
+  <label for="bgfx">Fundo animado da conversa</label>
+  <select id="bgfx" data-k="bgfx">
+    <option value="estrelas">Estrelas</option>
+    <option value="synthwave">Grade synthwave</option>
+    <option value="matrix">Chuva Matrix</option>
+    <option value="aurora">Aurora boreal</option>
+    <option value="bokeh">Bolhas de luz</option>
+    <option value="warp">Hiperespaço</option>
+    <option value="ondas">Ondas de luz</option>
+    <option value="constelacao">Constelação (reage ao mouse)</option>
+    <option value="chuva">Chuva neon</option>
+    <option value="vagalumes">Vaga-lumes</option>
+    <option value="nenhum">Nenhum</option>
+  </select>
+
+  <label for="shape">Formato do balão</label>
+  <select id="shape" data-k="shape">
+    <option value="padrao">Padrão do WhatsApp</option>
+    <option value="arredondado">Arredondado</option>
+    <option value="quadrado">Quadrado</option>
+    <option value="terminal">Terminal ( &gt; )</option>
+  </select>
+
+  <div class="row"><input type="checkbox" data-k="glass" id="glass"><label for="glass" class="inl">Vidro no topo e na caixa de mensagem</label></div>
+  <div class="row"><input type="checkbox" data-k="glow" id="glow"><label for="glow" class="inl">Luz que segue o mouse</label></div>
+  <div class="row"><input type="checkbox" data-k="enterfx" id="enterfx"><label for="enterfx" class="inl">Animação de mensagem nova</label></div>
+  <div class="row"><input type="checkbox" data-k="borders" id="borders"><label for="borders" class="inl">Bordas neon nos balões</label></div>
+  <div class="row"><input type="checkbox" data-k="wavefx" id="wavefx"><label for="wavefx" class="inl">Áudio pulsando enquanto toca</label></div>
+  <div class="row"><input type="checkbox" data-k="typefx" id="typefx"><label for="typefx" class="inl">Transcrição aparece digitando</label></div>
+  <div class="row"><input type="checkbox" data-k="unreadfx" id="unreadfx"><label for="unreadfx" class="inl">Conversas não lidas pulsando</label></div>
+  <div class="row"><input type="checkbox" data-k="compact" id="compact"><label for="compact" class="inl">Lista de conversas compacta</label></div>
+  <div class="row"><input type="checkbox" data-k="privacy" id="privacy"><label for="privacy" class="inl">Modo discreto (borra tudo até passar o mouse)</label></div>
+  <div class="hint warn">Atalho no WhatsApp: Alt+P liga e desliga o modo discreto.</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
