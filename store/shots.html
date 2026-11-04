@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>WP Neon – imagens da loja</title>
+<!-- Gera as imagens da Chrome Web Store. Uso (Chrome headless):
+     chrome --headless=new --screenshot=out.png --window-size=1280,800 "file:///.../store/shots.html?s=1"
+     s=1 transcrição · s=2 visual · s=3 configurações/privacidade · s=tile (440x280)
+     Conversas e nomes são fictícios. -->
+<style>
+  :root { --h: 282; --acc: hsl(var(--h) 100% 58%); --neon: hsl(var(--h) 100% 74%); --bg: hsl(var(--h) 50% 4%);
+          --panel: hsl(var(--h) 50% 8%); --raise: hsl(var(--h) 45% 15%); --in: hsl(var(--h) 40% 13%);
+          --out: hsl(var(--h) 70% 24%); --line: hsl(var(--h) 45% 20%); --text: hsl(var(--h) 100% 95%); --sub: hsl(var(--h) 30% 70%); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1280px; height: 800px; overflow: hidden; background: var(--bg); color: var(--text);
+               font: 16px/1.4 "Segoe UI", system-ui, sans-serif; }
+  canvas#sky { position: absolute; inset: 0; }
+  #root { position: relative; height: 100%; }
+  .wrap { position: relative; display: flex; height: 800px; padding: 64px; gap: 56px; align-items: center; }
+  .copy { width: 430px; flex: none; }
+  .logo { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .logo img { width: 64px; height: 64px; filter: drop-shadow(0 0 14px var(--acc)); }
+  .logo b { font-size: 22px; letter-spacing: .02em; }
+  h1 { font-size: 46px; line-height: 1.08; margin: 0 0 18px; text-shadow: 0 0 24px hsl(var(--h) 100% 60% / .55); }
+  h1 em { font-style: normal; color: var(--neon); }
+  p.lead { font-size: 19px; color: var(--sub); margin: 0 0 24px; }
+  ul.pts { list-style: none; padding: 0; margin: 0; }
+  ul.pts li { margin: 10px 0; padding-left: 30px; position: relative; font-size: 17px; }
+  ul.pts li::before { content: "✦"; position: absolute; left: 0; color: var(--neon); text-shadow: 0 0 8px var(--acc); }
+
+  .app { flex: 1; height: 640px; border-radius: 18px; background: hsl(var(--h) 50% 6% / .85); border: 1px solid var(--line);
+         box-shadow: 0 30px 80px -20px hsl(var(--h) 100% 40% / .55); display: flex; flex-direction: column; overflow: hidden; }
+  .top { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: hsl(var(--h) 50% 11% / .6);
+         border-bottom: 1px solid hsl(var(--h) 100% 74% / .2); backdrop-filter: blur(10px); }
+  .av { width: 40px; height: 40px; border-radius: 50%; flex: none; }
+  .top b { display: block; } .top small { color: var(--sub); }
+  .chat { flex: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; justify-content: flex-end; }
+  .b { max-width: 72%; padding: 9px 13px 7px; border-radius: 12px; background: var(--in); position: relative;
+       border: 1.5px solid hsl(var(--h) 100% 70% / .45); }
+  .b.o { align-self: flex-end; background: var(--out); }
+  .b .t { font-size: 11px; color: var(--sub); float: right; margin: 6px 0 0 12px; }
+  .audio { display: flex; align-items: center; gap: 12px; width: 360px; }
+  .play { width: 34px; height: 34px; border-radius: 50%; background: var(--acc); display: grid; place-items: center;
+          box-shadow: 0 0 14px var(--acc); flex: none; }
+  .play::after { content: ""; border-left: 11px solid #fff; border-top: 7px solid transparent; border-bottom: 7px solid transparent; margin-left: 3px; }
+  .wave { display: flex; align-items: center; gap: 3px; height: 30px; flex: 1; }
+  .wave i { width: 3px; border-radius: 2px; background: var(--neon); box-shadow: 0 0 5px var(--acc); }
+  .tx { align-self: flex-start; max-width: 72%; margin: -2px 0 6px; padding: 9px 13px; border-radius: 10px; font-size: 15px;
+        background: hsl(var(--h) 60% 8% / .9); border: 1px solid hsl(var(--h) 100% 74% / .6);
+        box-shadow: 0 0 14px hsl(var(--h) 100% 58% / .35), inset 0 0 8px hsl(var(--h) 100% 58% / .12); }
+  .tx small { display: block; color: var(--neon); font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+  .tilt { transform: perspective(800px) rotateY(-11deg) rotateX(6deg) scale(1.03);
+          box-shadow: 0 14px 30px -10px hsl(var(--h) 100% 50% / .8), 0 0 0 1px hsl(var(--h) 100% 74% / .5); }
+  .compose { margin: 0 16px 16px; padding: 12px 18px; border-radius: 24px; background: hsl(var(--h) 45% 15% / .55);
+             border: 1px solid hsl(var(--h) 100% 74% / .18); color: var(--sub); }
+
+  .swatches { display: flex; gap: 12px; margin: 22px 0 6px; }
+  .swatches span { width: 34px; height: 34px; border-radius: 50%; box-shadow: 0 0 12px currentColor; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .chips span { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: hsl(var(--h) 50% 10% / .8); font-size: 14px; }
+
+  .pop { width: 360px; margin: 0 auto; transform: scale(1.18); transform-origin: center; flex: none; background: #0a0612; border: 1px solid #3b1a66; border-radius: 14px; padding: 18px;
+         box-shadow: 0 30px 80px -20px hsl(282 100% 40% / .6); font-size: 14px; }
+  .pop h3 { margin: 0 0 12px; color: #d27cff; text-shadow: 0 0 8px #b026ff; font-size: 17px; }
+  .priv { border: 1px solid #3b1a66; background: linear-gradient(160deg, #1a0d30, #0f0820); border-radius: 10px; padding: 10px 12px; color: #cfc3ea; font-size: 13px; }
+  .priv b { color: #fff; } .priv ul { margin: 6px 0 0; padding-left: 16px; } .priv li { margin: 3px 0; }
+  .lbl { color: #a898c8; margin: 12px 0 4px; font-size: 13px; }
+  .sel { padding: 7px 10px; border-radius: 8px; background: #170d2b; border: 1px solid #3b1a66; }
+  .row { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+  .row i { width: 15px; height: 15px; border-radius: 4px; background: #b026ff; box-shadow: 0 0 6px #b026ff; }
+  .row i.off { background: transparent; border: 1px solid #6a4b9a; box-shadow: none; }
+
+  /* tile 440x280 */
+  body.tile { width: 440px; height: 280px; }
+  .tilebox { position: relative; height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; }
+  .tilebox img { width: 84px; filter: drop-shadow(0 0 16px var(--acc)); }
+  .tilebox b { font-size: 26px; text-shadow: 0 0 18px var(--acc); }
+  .tilebox span { color: var(--sub); font-size: 15px; }
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div id="root"></div>
+<script>
+const s = new URLSearchParams(location.search).get("s") || "1";
+const wave = (n, seed) => Array.from({ length: n }, (_, i) => `<i style="height:${6 + Math.abs(Math.sin(i * 1.7 + seed) * 22)}px"></i>`).join("");
+const av = (h) => `<div class="av" style="background:linear-gradient(135deg,hsl(${h} 70% 60%),hsl(${h + 60} 70% 40%))"></div>`;
+const logo = `<div class="logo"><img src="../icons/icon128.png"><b>WP Neon</b></div>`;
+
+const scenes = {
+  "1": `<div class="wrap"><div class="copy">${logo}
+      <h1>Leia os áudios <em>sem dar play</em></h1>
+      <p class="lead">Cada áudio recebido no WhatsApp Web ganha a transcrição logo embaixo. Ideal para reunião, vídeo ou lugar barulhento.</p>
+      <ul class="pts"><li>Transcrição automática em português</li><li>Roda no seu computador, nada é enviado</li><li>Grátis, sem conta e sem chave</li><li>Guarda as transcrições por 1 mês</li></ul></div>
+    <div class="app"><div class="top">${av(200)}<div><b>Ana Souza</b><small>online</small></div></div>
+      <div class="chat">
+        <div class="b">Oi! Viu o e-mail do cliente?<span class="t">14:02</span></div>
+        <div class="b o">Vi sim, estou numa reunião agora<span class="t">14:03</span></div>
+        <div class="b"><div class="audio"><div class="play"></div><div class="wave">${wave(38, 1)}</div></div><span class="t">0:21 · 14:04</span></div>
+        <div class="tx"><small>✦ Transcrição</small>Beleza, então sem pressa. Ele pediu para mudar a entrega para sexta e mandou o contrato novo. Quando sair da reunião dá uma olhada e me fala se está tudo certo.</div>
+        <div class="b"><div class="audio"><div class="play"></div><div class="wave">${wave(22, 4)}</div></div><span class="t">0:07 · 14:05</span></div>
+        <div class="tx"><small>✦ Transcrição</small>Ah, e não esquece do almoço amanhã ao meio-dia!</div>
+      </div><div class="compose">Digite uma mensagem</div></div></div>`,
+
+  "2": `<div class="wrap"><div class="copy">${logo}
+      <h1>Seu WhatsApp Web <em>no modo neon</em></h1>
+      <p class="lead">Tema escuro em 7 cores, efeito 3D que segue o mouse e 10 fundos animados.</p>
+      <div class="swatches">${[282, 205, 322, 352, 24, 180, 135].map((h) => `<span style="color:hsl(${h} 100% 58%);background:hsl(${h} 100% 58%)"></span>`).join("")}</div>
+      <div class="chips"><span>Estrelas</span><span>Synthwave</span><span>Matrix</span><span>Aurora</span><span>Hiperespaço</span><span>Constelação</span><span>Vaga-lumes</span><span>Bordas neon</span><span>Vidro</span><span>Fonte mono</span></div></div>
+    <div class="app"><div class="top">${av(300)}<div><b>Projeto Aurora</b><small>Bruno, Carla, Diego, você</small></div></div>
+      <div class="chat">
+        <div class="b">Bom dia, pessoal! ☀️<span class="t">09:02</span></div>
+        <div class="b o">Bom dia! Hoje sai a versão nova<span class="t">09:03</span></div>
+        <div class="b"><div class="audio"><div class="play"></div><div class="wave">${wave(30, 2)}</div></div><span class="t">0:12 · 09:05</span></div>
+        <div class="tx"><small>✦ Transcrição</small>Show! Me avisa quando subir que eu testo no celular.</div>
+        <div class="b">Ficou pronto o layout novo?<span class="t">09:12</span></div>
+        <div class="b o tilt">Ficou! Mandei no drive agora 🚀<span class="t">09:13</span></div>
+        <div class="b">Que demais, vou olhar já<span class="t">09:14</span></div>
+        <div class="b o">Qualquer coisa me chama<span class="t">09:14</span></div>
+      </div><div class="compose">Digite uma mensagem</div></div></div>`,
+
+  "3": `<div class="wrap"><div class="copy">${logo}
+      <h1>Seus dados <em>ficam com você</em></h1>
+      <p class="lead">O Whisper roda dentro do Chrome. Nenhum áudio, mensagem ou contato sai do seu computador.</p>
+      <ul class="pts"><li>Sem servidor, conta, rastreamento ou anúncio</li><li>Transcrições apagadas sozinhas em 31 dias</li><li>Modo discreto: borra fotos e nomes (Alt+P)</li><li>Código aberto no GitHub</li></ul></div>
+    <div class="pop"><h3>✦ WP Neon</h3>
+      <div class="priv"><b>🔒 Seus dados ficam com você</b><ul><li>Áudios transcritos dentro do seu computador.</li><li>Transcrições só neste Chrome, por 1 mês.</li><li>Sem conta, rastreamento nem anúncio.</li></ul></div>
+      <div class="lbl">Modelo Whisper (grátis, roda no seu PC)</div><div class="sel">small (melhor em português)</div>
+      <div class="row"><i></i>Transcrever automaticamente</div>
+      <div class="lbl">Fundo animado da conversa</div><div class="sel">Estrelas</div>
+      <div class="row"><i></i>Efeito 3D que segue o mouse</div>
+      <div class="row"><i></i>Bordas neon nos balões</div>
+      <div class="row"><i class="off"></i>Modo discreto</div>
+    </div><div style="flex:1"></div></div>`,
+
+  tile: `<div class="tilebox"><img src="../icons/icon128.png"><b>WP Neon</b><span>Transcrição de áudio + visual neon<br>para o WhatsApp Web</span></div>`
+};
+if (s === "tile") document.body.classList.add("tile");
+document.getElementById("root").innerHTML = scenes[s];
+
+// céu de estrelas fixo (semente fixa: a imagem sai sempre igual)
+const c = document.getElementById("sky"), g = c.getContext("2d");
+// tamanho fixo: no headless o innerWidth sai menor que a janela
+if (s === "tile") { c.width = 440; c.height = 280; } else { c.width = 1280; c.height = 800; }
+c.style.width = c.width + "px"; c.style.height = c.height + "px";
+let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const grd = g.createRadialGradient(c.width * 0.8, c.height * 0.1, 0, c.width * 0.8, c.height * 0.1, c.width * 0.9);
+grd.addColorStop(0, "hsl(282 90% 25% / .55)"); grd.addColorStop(1, "hsl(282 60% 4% / 0)");
+g.fillStyle = grd; g.fillRect(0, 0, c.width, c.height);
+for (let i = 0; i < (c.width * c.height) / 3000; i++) {
+  const z = rnd(); g.fillStyle = `hsl(282 ${z > .8 ? 100 : 30}% 85% / ${.25 + z * .6})`;
+  g.beginPath(); g.arc(rnd() * c.width, rnd() * c.height, .4 + z * 1.4, 0, 6.28); g.fill();
+}
+</script>
+</body>
+</html>

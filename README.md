@@ -2,7 +2,7 @@
   <img src="icons/icon128.png" width="96" alt="WP">
 </p>
 
-<h1 align="center">WhatsApp Neon Transcriber</h1>
+<h1 align="center">WP Neon – Transcrição de áudio para WhatsApp Web</h1>
 
 <p align="center">
   Extensão do Chrome que <b>transcreve os áudios do WhatsApp Web dentro do seu computador</b>
