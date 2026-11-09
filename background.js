@@ -35,12 +35,25 @@ async function ensureOffscreen() {
   await creating;
 }
 
+// Logo depois de criado, o documento offscreen pode ainda não ter registrado o
+// listener: a primeira mensagem voltava "Receiving end does not exist" ou sem
+// resposta. Tenta de novo por alguns segundos antes de desistir.
+async function askOffscreen(msg) {
+  for (let i = 0; ; i++) {
+    try {
+      const r = await chrome.runtime.sendMessage({ target: "offscreen", ...msg });
+      if (r !== undefined || i >= 20) return r;
+    } catch (e) {
+      if (i >= 20 || !/Receiving end does not exist|message port closed/i.test(String(e.message || e))) throw e;
+    }
+    await new Promise((res) => setTimeout(res, 150));
+  }
+}
+
 async function transcribe({ b64 }) {
   const s = await getSettings();
   await ensureOffscreen();
-  const r = await chrome.runtime.sendMessage({
-    target: "offscreen", type: "whisper", b64, model: s.localModel, language: s.language
-  });
+  const r = await askOffscreen({ type: "whisper", b64, model: s.localModel, language: s.language });
   if (!r || !r.ok) throw new Error((r && r.error) || "falha no Whisper local");
   return r.text;
 }
@@ -48,7 +61,7 @@ async function transcribe({ b64 }) {
 async function warmup() {
   const s = await getSettings();
   await ensureOffscreen();
-  const r = await chrome.runtime.sendMessage({ target: "offscreen", type: "warmup", model: s.localModel });
+  const r = await askOffscreen({ type: "warmup", model: s.localModel });
   if (!r || !r.ok) throw new Error((r && r.error) || "falha ao carregar o modelo");
 }
 

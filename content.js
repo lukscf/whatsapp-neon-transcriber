@@ -314,12 +314,24 @@ async function pump() {
   while (queue.length) {
     const id = queue.shift();
     try {
-      const msg = document.querySelector(`#main [data-id="${CSS.escape(id)}"]`);
-      const btn = msg && msg.querySelector(PLAY_SEL);
-      if (!btn) throw new Error("abra a conversa do áudio e tente de novo");
-      const { buf, mime } = await capture(btn);
-      const r = await chrome.runtime.sendMessage({ type: "transcribe", b64: toB64(buf), mime });
-      if (!r || !r.ok) throw new Error((r && r.error) || "falha na transcrição");
+      // A primeira transcrição depois de abrir o WhatsApp às vezes falha (extensão
+      // acordando, modelo carregando, áudio ainda não baixado). Tenta mais uma vez,
+      // em silêncio, antes de mostrar o erro.
+      let r;
+      for (let attempt = 0; ; attempt++) {
+        try {
+          const msg = document.querySelector(`#main [data-id="${CSS.escape(id)}"]`);
+          const btn = msg && msg.querySelector(PLAY_SEL);
+          if (!btn) throw Object.assign(new Error("abra a conversa do áudio e tente de novo"), { final: true });
+          const { buf, mime } = await capture(btn);
+          r = await chrome.runtime.sendMessage({ type: "transcribe", b64: toB64(buf), mime });
+          if (!r || !r.ok) throw new Error((r && r.error) || "falha na transcrição");
+          break;
+        } catch (e) {
+          if (e.final || attempt >= 1) throw e;
+          await new Promise((res) => setTimeout(res, 1500));
+        }
+      }
       cache[id] = { t: r.text, at: Date.now() };
       freshIds.add(id);
       saveCache();

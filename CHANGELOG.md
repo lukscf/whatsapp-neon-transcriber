@@ -1,5 +1,11 @@
 # Histórico
 
+## 2.2.1
+- Correção: a primeira transcrição depois de abrir o WhatsApp Web dava erro e só a segunda funcionava. Três causas tratadas:
+  - a captura pegava o primeiro `play()` da página, que o WhatsApp usa sem áudio para destravar o som. Agora ela espera o áudio de verdade;
+  - o documento offscreen recém-criado ainda não ouvia mensagens. O service worker agora espera ele ficar pronto;
+  - se algo ainda falhar na primeira vez (extensão acordando, modelo carregando), a transcrição tenta de novo sozinha antes de mostrar o erro.
+
 ## 2.1.0
 - 7 fundos animados novos: Aurora boreal, Bolhas de luz, Hiperespaço, Ondas de luz, Constelação, Chuva neon e Vaga-lumes.
 - Modo discreto borra só fotos e nomes, inclusive o autor das mensagens em grupo. Emojis ficam de fora.

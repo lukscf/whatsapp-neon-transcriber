@@ -7,15 +7,18 @@
 
   HTMLMediaElement.prototype.play = function (...args) {
     const id = root.dataset.wtCapture;
-    if (!id) return origPlay.apply(this, args);
+    const src = this.currentSrc || this.src;
+    // Na primeira interação da página o WhatsApp dá play() em elementos de mídia sem
+    // fonte (para destravar o áudio do navegador). Esses passam direto e a captura
+    // espera o play() do áudio de verdade, que já vem com src.
+    if (!id || !src || this.tagName !== "AUDIO") return origPlay.apply(this, args);
     delete root.dataset.wtCapture;
 
     const el = this;
     const prevMuted = el.muted;
     el.muted = true;
 
-    const src = el.currentSrc || el.src;
-    (src ? fetch(src).then((r) => r.blob()) : Promise.reject(new Error("áudio sem src")))
+    fetch(src).then((r) => r.blob())
       .then((b) => b.arrayBuffer().then((buf) =>
         window.postMessage({ __wt: "audio", id, mime: b.type || "audio/ogg", buf }, "*", [buf])))
       .catch((e) => window.postMessage({ __wt: "error", id, msg: String(e && e.message || e) }, "*"));
