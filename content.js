@@ -47,7 +47,13 @@ function applyTheme() {
 }
 
 // ---------- aparência: cor do tema, fonte e efeito 3D ----------
-const PRESETS = { roxo: 282, azul: 205, rosa: 322, vermelho: 352, laranja: 24, ciano: 180, matrix: 135 };
+const PRESETS = { roxo: 282, azul: 205, rosa: 322, vermelho: 352, laranja: 24, ciano: 180, matrix: 135, bullet: 76 };
+// Tema Bullet (Bullet Identity Source v1.27): rampa ink neutra, texto branco e paper-100,
+// lime-500 só como acento. Os verdes do WhatsApp viram lime (matiz 76) e os cinzas ficam neutros.
+const BULLET_PAL = {
+  bg: "#070707", panel: "#0C0C0C", header: "#131313", raise: "#1A1A1A", in: "#131313", out: "#242424",
+  line: "#242424", accent: "#C2F141", neon: "#C2F141", text: "#FFFFFF", sub: "#A3A3A3"
+};
 const LOOK_KEYS = ["preset", "font", "fx3d", "typefx"];
 let look = { preset: "roxo", font: "padrao", fx3d: true, typefx: true };
 const freshIds = new Set(); // transcritos agora (animam digitando)
@@ -63,7 +69,8 @@ function strip(o) { return Object.fromEntries(Object.entries(o).filter(([, v]) =
 function applyLook() {
   const root = document.documentElement;
   const h = PRESETS[look.preset] ?? PRESETS.roxo;
-  const pal = {
+  const bullet = look.preset === "bullet";
+  const pal = bullet ? BULLET_PAL : {
     bg: `hsl(${h} 50% 4%)`, panel: `hsl(${h} 50% 8%)`, header: `hsl(${h} 50% 11%)`,
     raise: `hsl(${h} 45% 15%)`, in: `hsl(${h} 40% 13%)`, out: `hsl(${h} 70% 24%)`,
     line: `hsl(${h} 45% 20%)`, accent: `hsl(${h} 100% 58%)`, neon: `hsl(${h} 100% 74%)`,
@@ -71,8 +78,11 @@ function applyLook() {
   };
   for (const [k, v] of Object.entries(pal)) root.style.setProperty("--wt-" + k, v);
   root.dataset.wtHue = String(h); // o inject.js usa pra recolorir as cores do WhatsApp
+  root.dataset.wtNeutral = bullet ? "1" : "";
+  root.classList.toggle("wt-bullet", bullet);
   root.classList.toggle("wt-font-mono", look.font === "mono");
   root.classList.toggle("wt-font-arial", look.font === "arial");
+  root.classList.toggle("wt-font-open", look.font === "opensans" || (bullet && (look.font || "padrao") === "padrao"));
   root.classList.toggle("wt-3d", !!look.fx3d);
   if (!look.fx3d) resetTilt();
   refreshImages();

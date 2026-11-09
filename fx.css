@@ -124,3 +124,6 @@ html.wt-privacy::after {
 }
 .wt-more { all: unset; cursor: pointer; display: block; margin-top: 4px; font-size: 12px; font-weight: 600;
            color: var(--wt-neon, #c86bff); }
+
+/* fundo Bullet: o canvas do bullet-fx.js fica atrás das mensagens, como o #wt-bg */
+#main > #bullet-fx-canvas { z-index: -1 !important; opacity: .8; }

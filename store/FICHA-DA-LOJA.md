@@ -10,7 +10,7 @@ Pasta do projeto: `C:\Users\luksc\Downloads\whatsapp-neon-transcriber`
 
 ## 1. Criar o item
 1. No painel, clique em **+ Novo item**.
-2. Envie o arquivo **`dist\wp-neon-2.2.1.zip`**.
+2. Envie o arquivo **`dist\wp-neon-2.3.0.zip`**.
 
 ---
 

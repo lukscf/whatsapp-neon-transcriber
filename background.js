@@ -1,5 +1,5 @@
 // Service worker: transcrição com o Whisper local e o ícone na cor do tema.
-const PRESETS = { roxo: 282, azul: 205, rosa: 322, vermelho: 352, laranja: 24, ciano: 180, matrix: 135 };
+const PRESETS = { roxo: 282, azul: 205, rosa: 322, vermelho: 352, laranja: 24, ciano: 180, matrix: 135, bullet: 76 };
 
 chrome.runtime.onMessage.addListener((m, _sender, send) => {
   if (!m || m.target === "offscreen") return;
@@ -67,7 +67,8 @@ async function warmup() {
 
 // ---------- ícone na cor escolhida ----------
 // Mesmo desenho do icons/*.png (que fica de reserva), só que com o matiz do tema.
-function drawIcon(size, h) {
+function drawIcon(size, h, bullet) {
+  if (bullet) return drawBulletIcon(size);
   const c = new OffscreenCanvas(size, size);
   const g = c.getContext("2d");
   const pad = Math.max(0.5, size * 0.04), rad = size * 0.22, w = size - 2 * pad;
@@ -116,11 +117,34 @@ function drawIcon(size, h) {
   return g.getImageData(0, 0, size, size);
 }
 
+// Tema Bullet: ladrilho ink, letras paper-100 e um fio lime (acento só em detalhe).
+function drawBulletIcon(size) {
+  const c = new OffscreenCanvas(size, size);
+  const g = c.getContext("2d");
+  const pad = Math.max(0.5, size * 0.04), rad = size * 0.22, w = size - 2 * pad;
+  const box = new Path2D();
+  box.roundRect(pad, pad, w, w, rad);
+  const grad = g.createLinearGradient(0, 0, size, size);
+  grad.addColorStop(0, "#1A1A1A");
+  grad.addColorStop(1, "#070707");
+  g.fillStyle = grad;
+  g.fill(box);
+  g.strokeStyle = "#C2F141";
+  g.lineWidth = Math.max(1, size * 0.04);
+  g.stroke(box);
+  g.font = `800 ${Math.round(size * 0.46)}px "Open Sans", "Segoe UI", Arial, sans-serif`;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillStyle = "#F8F3E9";
+  g.fillText("WP", size / 2, size * 0.53);
+  return g.getImageData(0, 0, size, size);
+}
+
 async function updateIcon() {
   const { preset } = await chrome.storage.local.get("preset");
   const h = PRESETS[preset] ?? PRESETS.roxo;
   const imageData = {};
-  for (const s of [16, 32, 48, 128]) imageData[s] = drawIcon(s, h);
+  for (const s of [16, 32, 48, 128]) imageData[s] = drawIcon(s, h, preset === "bullet");
   await chrome.action.setIcon({ imageData });
 }
 

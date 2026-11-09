@@ -31,7 +31,9 @@
     root.classList.toggle("wt-privacy", !!fx.privacy);
     for (const s of ["arredondado", "quadrado", "terminal"]) root.classList.toggle("wt-shape-" + s, fx.shape === s);
     if (!fx.glow && glowEl) glowEl.style.opacity = "0";
-    if (fx.bgfx === "nenhum") stopBg(); else ensureBg();
+    if (fx.bgfx === "nenhum" || fx.bgfx === "bullet") stopBg(); else ensureBg();
+    // fundo Bullet (balas e cripto): desenhado pelo bullet-fx.js dentro de #main
+    root.dataset.bulletFx = fx.bgfx === "bullet" ? "#main" : "off";
     sweep();
   }
 
@@ -65,7 +67,7 @@
   function sweep() {
     const main = document.querySelector("#main");
     if (main) {
-      if (fx.bgfx !== "nenhum") ensureBg();
+      if (fx.bgfx !== "nenhum" && fx.bgfx !== "bullet") ensureBg();
       // esconde a camada do papel de parede do WhatsApp (absoluta e do tamanho do painel)
       const mr = main.getBoundingClientRect();
       for (const e of main.children) markWall(e, mr);

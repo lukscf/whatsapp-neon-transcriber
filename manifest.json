@@ -1,30 +1,72 @@
 {
   "manifest_version": 3,
   "name": "WP Neon – Transcrição de áudio para WhatsApp Web",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Transcreve no seu PC os áudios recebidos no WhatsApp Web (Whisper local, nada sai do computador) e aplica um visual dark neon.",
-  "permissions": ["storage", "unlimitedStorage", "offscreen"],
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "offscreen"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "web_accessible_resources": [
-    { "resources": ["fonts/*.woff2"], "matches": ["https://web.whatsapp.com/*"] }
+    {
+      "resources": [
+        "fonts/*.woff2"
+      ],
+      "matches": [
+        "https://web.whatsapp.com/*"
+      ]
+    }
   ],
-  "host_permissions": ["https://web.whatsapp.com/*"],
-  "background": { "service_worker": "background.js" },
-  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
-  "action": { "default_popup": "popup.html", "default_title": "WP Neon", "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" } },
+  "host_permissions": [
+    "https://web.whatsapp.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WP Neon",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
   "content_scripts": [
     {
-      "matches": ["https://web.whatsapp.com/*"],
-      "js": ["inject.js"],
+      "matches": [
+        "https://web.whatsapp.com/*"
+      ],
+      "js": [
+        "inject.js"
+      ],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": ["https://web.whatsapp.com/*"],
-      "js": ["content.js", "fx.js"],
-      "css": ["theme.css", "fx.css"],
+      "matches": [
+        "https://web.whatsapp.com/*"
+      ],
+      "js": [
+        "bullet-fx.js",
+        "content.js",
+        "fx.js"
+      ],
+      "css": [
+        "theme.css",
+        "fx.css"
+      ],
       "run_at": "document_start"
     }
   ]

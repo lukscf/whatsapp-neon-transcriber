@@ -1,5 +1,5 @@
 const $ = (id) => document.getElementById(id);
-const PRESETS = ["roxo", "azul", "rosa", "vermelho", "laranja", "ciano", "matrix"];
+const PRESETS = ["roxo", "azul", "rosa", "vermelho", "laranja", "ciano", "matrix", "bullet"];
 
 chrome.storage.local.get(["localModel", "language", "auto", "theme", "preset", "font", "fx3d"], (s) => {
   $("localModel").value = s.localModel || "Xenova/whisper-small";
@@ -35,6 +35,13 @@ function markPreset(p) {
 }
 document.querySelectorAll(".sw").forEach((b) => b.addEventListener("click", () => {
   markPreset(b.dataset.p);
+  // Escolher Bullet liga junto o fundo de balas e cripto
+  if (b.dataset.p === "bullet") {
+    chrome.storage.local.set({ preset: "bullet", bgfx: "bullet" });
+    const sel = document.getElementById("bgfx");
+    if (sel) sel.value = "bullet";
+    return;
+  }
   chrome.storage.local.set({ preset: b.dataset.p });
 }));
 $("theme").addEventListener("change", () => chrome.storage.local.set({ theme: $("theme").checked }));

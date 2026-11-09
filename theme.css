@@ -193,3 +193,20 @@ html.wt-neon #main {
   --WDS-systems-chat-background-wallpaper: var(--wt-bg) !important;
   --WDS-systems-chat-foreground-wallpaper: var(--wt-line) !important;
 }
+
+/* Open Sans (fonte da marca Bullet; SIL OFL 1.1, texto em fonts/OFL-OpenSans.txt) */
+@font-face { font-family: "WT Open Sans"; font-weight: 300 800; font-display: swap;
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/OpenSans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212; }
+@font-face { font-family: "WT Open Sans"; font-weight: 300 800; font-display: swap;
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/OpenSans-latinext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1EFF, U+20A0-20C4; }
+html.wt-font-open body, html.wt-font-open body *:not(svg):not(path) {
+  font-family: "WT Open Sans", "Open Sans", Arial, sans-serif, "Segoe UI Emoji" !important;
+}
+/* Tema Bullet: acento lime só em detalhe; brilhos neon contidos; curva de movimento da marca */
+html.wt-bullet { --wt-glow-strength: .35; }
+html.wt-bullet .wt-box { border-color: #333333 !important; box-shadow: 0 12px 32px rgba(0,0,0,.55) !important; }
+html.wt-bullet .wt-btn { background: #F8F3E9 !important; color: #070707 !important; border-radius: 999px !important; box-shadow: none !important; text-shadow: none !important; }
+html.wt-bullet :focus-visible { outline: 2px solid #C2F141 !important; outline-offset: 2px; }
+html.wt-bullet * { transition-timing-function: cubic-bezier(.22,1,.36,1); }

@@ -49,7 +49,8 @@ function recolor() {
     try { sig += sh.cssRules.length; } catch {}
   }
   const hue = +(document.documentElement.dataset.wtHue || 282);
-  sig = sig + "|" + hue; // trocar a cor do tema também refaz
+  const neutral = !!document.documentElement.dataset.wtNeutral; // tema Bullet: cinzas sem matiz
+  sig = sig + "|" + hue + "|" + neutral; // trocar a cor do tema também refaz
   if (sig === recolorSig) return;
   recolorSig = sig;
   // 1) todos os nomes de variável, inclusive dentro de @media
@@ -83,7 +84,7 @@ function recolor() {
     const { h, s, l } = toHsl(c);
     let out = null;
     if (s > 0.2 && h >= 75 && h <= 185) out = fromHsl(hue, Math.min(1, s * 1.05), l, c.a);          // verdes/teal
-    else if (s < 0.12 && l < 0.22) out = fromHsl(hue, 0.42, Math.max(l, 0.03), c.a);                 // cinzas escuros
+    else if (s < 0.12 && l < 0.22) out = fromHsl(hue, neutral ? 0 : 0.42, Math.max(l, neutral ? 0.027 : 0.03), c.a);                 // cinzas escuros
     if (out) lines.push(`${p}:${out} !important;`);
   }
   // html e body: o WhatsApp redefine as variáveis no body (tema escuro)

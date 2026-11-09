@@ -1,5 +1,10 @@
 # Histórico
 
+## 2.3.0
+- **Tema Bullet**: paleta, tipografia e movimento do Bullet Identity Source. Fundo quase preto, superfícies em degraus de cinza, texto branco e off-white, Open Sans e acento lime só em detalhe; os verdes do WhatsApp viram lime e os cinzas ficam neutros. Escolher Bullet no popup liga junto o fundo novo, e o ícone da barra fica preto com fio lime.
+- **Fundo "Bullet: balas e cripto"**: balas com rastro cruzando a conversa, moedas cripto girando (₿, Ξ, ₮, $, ◎, Ł) e uma linha de preço discreta, sobre textura de ruído. Pausa com a aba escondida e respeita "reduzir movimento".
+- **Fonte**: nova opção Open Sans (licença OFL), além de Roboto Mono e Arial.
+
 ## 2.2.1
 - Correção: a primeira transcrição depois de abrir o WhatsApp Web dava erro e só a segunda funcionava. Três causas tratadas:
   - a captura pegava o primeiro `play()` da página, que o WhatsApp usa sem áudio para destravar o som. Agora ela espera o áudio de verdade;
