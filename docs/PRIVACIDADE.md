@@ -21,6 +21,15 @@
 
 Nada é sincronizado com a sua conta Google.
 
+## Por que cada permissão
+| Permissão | Para quê |
+|---|---|
+| `storage` | Guardar as transcrições e as configurações no `chrome.storage.local`, neste Chrome. |
+| `unlimitedStorage` | O modelo Whisper (por padrão o whisper-small, com algumas centenas de MB) e fica no cache da extensão para não ser baixado de novo; sem esta permissão o Chrome limitaria o espaço e apagaria o modelo. Nada além do modelo, das transcrições e das configurações é guardado. |
+| `offscreen` | O Whisper roda num documento invisível da própria extensão (`offscreen.html`), porque o service worker do Chrome não consegue rodar o modelo. Esse documento só recebe o áudio, transcreve e devolve o texto; não abre site nem faz conexão além do download do modelo. |
+| `https://web.whatsapp.com/*` | Ler os áudios das conversas abertas e aplicar o tema. É o único site que a extensão acessa. |
+
+
 **Apagar tudo:** no popup, clique em **"Apagar transcrições salvas agora"**. Remover a extensão
 apaga também as configurações e o modelo.
 
