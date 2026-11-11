@@ -1,34 +1,71 @@
 // Roda no contexto da página (MAIN world). Quando o content script liga a flag
 // data-wt-capture, o próximo play() de áudio é interceptado: o áudio toca mudo,
 // é pausado na hora e os bytes (já decifrados pelo WhatsApp) vão pro content script.
+//
+// Proteção contra áudio tocando sozinho ao abrir uma conversa:
+// - play() logo depois de um clique de verdade do usuário (isTrusted) num balão de áudio
+//   nunca é capturado nem bloqueado: toca normalmente. O clique que abre a conversa não conta
+//   (ele fica fora dos balões), nem o clique automático da transcrição (não é isTrusted).
+// - O WhatsApp às vezes chama play() mais de uma vez para o mesmo áudio (aquecimento, áudio
+//   ainda baixando). Por isso, durante a captura e alguns segundos depois dela, qualquer play()
+//   de áudio sem gesto do usuário também toca mudo e é pausado na hora.
 (() => {
   const root = document.documentElement;
   const origPlay = HTMLMediaElement.prototype.play;
+  const GUARD_MS = 4000;
+  let guardUntil = 0;
 
-  HTMLMediaElement.prototype.play = function (...args) {
-    const id = root.dataset.wtCapture;
-    const src = this.currentSrc || this.src;
-    // Na primeira interação da página o WhatsApp dá play() em elementos de mídia sem
-    // fonte (para destravar o áudio do navegador). Esses passam direto e a captura
-    // espera o play() do áudio de verdade, que já vem com src.
-    if (!id || !src || this.tagName !== "AUDIO") return origPlay.apply(this, args);
-    delete root.dataset.wtCapture;
+  // último clique/tecla de verdade do usuário num balão de áudio da conversa
+  const AUDIO_UI = '[data-icon="audio-play"],[data-icon="ptt-play"],[data-icon="ptt-status-play"],[data-icon="audio-pause"],[data-icon="ptt-pause"]';
+  let lastUserAudioAction = 0;
+  const onUserAction = (e) => {
+    if (!e.isTrusted || !(e.target instanceof Element)) return;
+    if (e.target.closest(".wt-box")) return; // botões da própria extensão ("Transcrever", "ver tudo")
+    const msg = e.target.closest("#main [data-id]");
+    if (e.target.closest(AUDIO_UI) || (msg && msg.querySelector(AUDIO_UI))) lastUserAudioAction = Date.now();
+  };
+  document.addEventListener("pointerdown", onUserAction, true);
+  document.addEventListener("click", onUserAction, true);
+  document.addEventListener("keydown", onUserAction, true);
+  const userGesture = () => Date.now() - lastUserAudioAction < 1500;
 
-    const el = this;
+  // toca mudo e pausa assim que o play() resolve (mantém os eventos que o WhatsApp espera)
+  function silentPlay(el, args) {
     const prevMuted = el.muted;
     el.muted = true;
-
-    fetch(src).then((r) => r.blob())
-      .then((b) => b.arrayBuffer().then((buf) =>
-        window.postMessage({ __wt: "audio", id, mime: b.type || "audio/ogg", buf }, "*", [buf])))
-      .catch((e) => window.postMessage({ __wt: "error", id, msg: String(e && e.message || e) }, "*"));
-
-    const p = origPlay.apply(this, args);
+    const p = origPlay.apply(el, args);
     Promise.resolve(p)
       .then(() => { el.pause(); el.currentTime = 0; })
       .catch(() => {})
       .finally(() => { el.muted = prevMuted; });
     return p;
+  }
+
+  HTMLMediaElement.prototype.play = function (...args) {
+    const id = root.dataset.wtCapture;
+    const src = this.currentSrc || this.src;
+    const isAudio = this.tagName === "AUDIO";
+    // clique de verdade do usuário: sempre toca, e encerra a janela de proteção
+    if (!isAudio || userGesture()) {
+      if (isAudio) guardUntil = 0;
+      return origPlay.apply(this, args);
+    }
+    // Na primeira interação da página o WhatsApp dá play() em elementos de mídia sem
+    // fonte (para destravar o áudio do navegador). Esses passam direto. Áudios de voz
+    // vêm de blob:; data: e outras fontes não são capturados.
+    if (id && src && /^blob:/.test(src)) {
+      delete root.dataset.wtCapture;
+      guardUntil = Date.now() + GUARD_MS;
+      fetch(src).then((r) => r.blob())
+        .then((b) => b.arrayBuffer().then((buf) =>
+          window.postMessage({ __wt: "audio", id, mime: b.type || "audio/ogg", buf }, "*", [buf])))
+        .catch((e) => window.postMessage({ __wt: "error", id, msg: String(e && e.message || e) }, "*"))
+        .finally(() => { guardUntil = Date.now() + GUARD_MS; });
+      return silentPlay(this, args);
+    }
+    // segundo play() do mesmo áudio (ou de outro) logo depois de uma captura, sem gesto: mudo
+    if (src && (id || Date.now() < guardUntil)) return silentPlay(this, args);
+    return origPlay.apply(this, args);
   };
 })();
 

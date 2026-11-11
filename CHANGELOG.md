@@ -1,5 +1,11 @@
 # Histórico
 
+## 2.3.1
+- **Áudio não toca mais sozinho ao abrir uma conversa.** Para transcrever, a extensão aperta o play do áudio sem som e pausa. O WhatsApp às vezes chamava o play uma segunda vez (áudio ainda baixando) e esse segundo play saía com som.
+  - Agora, durante a captura e alguns segundos depois, todo play sem clique seu num balão de áudio fica mudo e é pausado.
+  - Play que você mesmo dá num áudio continua tocando normalmente.
+  - A captura só pega áudios de voz (blob:).
+
 ## 2.3.0
 - **Tema Bullet**: paleta, tipografia e movimento do Bullet Identity Source. Fundo quase preto, superfícies em degraus de cinza, texto branco e off-white, Open Sans e acento lime só em detalhe; os verdes do WhatsApp viram lime e os cinzas ficam neutros. Escolher Bullet no popup liga junto o fundo novo, e o ícone da barra fica preto com fio lime.
 - **Fundo "Bullet: balas e cripto"**: balas com rastro cruzando a conversa, moedas cripto girando (₿, Ξ, ₮, $, ◎, Ł) e uma linha de preço discreta, sobre textura de ruído. Pausa com a aba escondida e respeita "reduzir movimento".

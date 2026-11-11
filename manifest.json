@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "WP Neon – Transcrição de áudio para WhatsApp Web",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Transcreve no seu PC os áudios recebidos no WhatsApp Web (Whisper local, nada sai do computador) e aplica um visual dark neon.",
   "permissions": [
     "storage",
